@@ -49,7 +49,9 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddScoped<ILoginAndRegisterService, LoginAndRegisterService>();
-
+builder.Services.AddScoped<IUserCartService, UserCartService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<ISnowballService, SnowballService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -92,24 +94,37 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-
-if (!app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+        var services = scope.ServiceProvider;
+        var dbContext = services.GetRequiredService<AppDbContext>();
+        dbContext.Database.Migrate();
+        var loginAndRegisterService = services.GetRequiredService<ILoginAndRegisterService>();
+        await loginAndRegisterService.CreateRoles();
+        var userService = scope.ServiceProvider.GetRequiredService<IAdminService>();
+        await userService.InitializeAdminAsync();
+}
+
+if (app.Environment.IsDevelopment())
+{
+        app.UseDeveloperExceptionPage();
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
+        });
+}
+else
+{
+        app.UseExceptionHandler("/Error");
+        app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAllOrigins");
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapStaticAssets();
-
-app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
-
+app.MapControllers();
 app.Run();
