@@ -52,6 +52,7 @@ builder.Services.AddScoped<ILoginAndRegisterService, LoginAndRegisterService>();
 builder.Services.AddScoped<IUserCartService, UserCartService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ISnowballService, SnowballService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
