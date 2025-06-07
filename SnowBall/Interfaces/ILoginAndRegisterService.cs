@@ -1,6 +1,6 @@
-﻿namespace SnowBall.Interfaces;
+﻿using SnowBall.Dtos;
 
-using SnowBall.Dtos;
+namespace SnowBall.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 public interface ILoginAndRegisterService
