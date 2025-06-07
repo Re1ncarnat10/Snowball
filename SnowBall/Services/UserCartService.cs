@@ -8,9 +8,12 @@ namespace SnowBall.Services;
 public class UserCartService : IUserCartService
 {
     private readonly AppDbContext _context;
-    public UserCartService(AppDbContext context)
+    private readonly IOrderService _orderService;
+    
+    public UserCartService(AppDbContext context, IOrderService orderService)
     {
         _context = context;
+        _orderService = orderService;
     }
     
     public async Task<bool> AddSnowballToCartAsync(string userId, int snowballId)
@@ -98,25 +101,27 @@ public class UserCartService : IUserCartService
     public async Task<OrderDto> PlaceOrderAsync(string userId)
     {
         var userCart = await _context.UserCarts
-            .Include(uc => uc.Snowballs)
-            .FirstOrDefaultAsync(uc => uc.UserId == userId);
+                        .Include(uc => uc.Snowballs)
+                        .FirstOrDefaultAsync(uc => uc.UserId == userId);
 
         if (userCart == null || !userCart.Snowballs.Any())
             return null;
 
         var orderDto = new OrderDto
         {
-            OrderDate = DateTime.UtcNow,
-            TotalPrice = userCart.Snowballs.Sum(s => s.Price),
-            Snowballs = userCart.Snowballs.Select(s => new SnowballDto
-            {
-                SnowballId = s.SnowballId,
-                Name = s.Name,
-                Description = s.Description,
-                Price = s.Price,
-                Image = s.Image
-            }).ToList()
+                        OrderDate = DateTime.UtcNow,
+                        TotalPrice = userCart.Snowballs.Sum(s => s.Price),
+                        Snowballs = userCart.Snowballs.Select(s => new SnowballDto
+                        {
+                                        SnowballId = s.SnowballId,
+                                        Name = s.Name,
+                                        Description = s.Description,
+                                        Price = s.Price,
+                                        Image = s.Image
+                        }).ToList()
         };
+
+        await _orderService.AddOrderAsync(orderDto);
 
         userCart.Snowballs.Clear();
         await _context.SaveChangesAsync();
