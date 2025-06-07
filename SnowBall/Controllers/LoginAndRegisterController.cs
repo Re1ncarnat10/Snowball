@@ -37,11 +37,4 @@ public class LoginAndRegisterController : ControllerBase
             return Unauthorized();
         }
     }
-
-    [HttpPost("roles")]
-    public async Task<IActionResult> CreateRoles()
-    {
-        await _service.CreateRoles();
-        return Ok();
-    }
 }
