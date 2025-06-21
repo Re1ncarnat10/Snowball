@@ -29,9 +29,9 @@ jobs:
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
-        push: true
-        tags: snowball.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5202276961a645d2aa9be66a18db86c9 }}/snowball:${{ github.sha }}
-        file: ./Dockerfile
+          push: true
+          tags: snowball.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5202276961a645d2aa9be66a18db86c9 }}/snowball:${{ github.sha }}
+          file: ./SnowBall/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
