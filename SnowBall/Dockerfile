@@ -7,9 +7,9 @@ EXPOSE 7081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["SnowBall/SnowBall.csproj", "./"]
+COPY ["SnowBall.csproj", "./"]
 RUN dotnet restore "SnowBall.csproj"
-COPY SnowBall/. .
+COPY . .
 RUN dotnet build "SnowBall.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
