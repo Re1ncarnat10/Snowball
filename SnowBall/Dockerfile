@@ -18,5 +18,6 @@ RUN dotnet publish "SnowBall.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:
 
 FROM base AS final
 WORKDIR /app
+RUN apt-get update && apt-get install -y libpq-dev
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SnowBall.dll"]
