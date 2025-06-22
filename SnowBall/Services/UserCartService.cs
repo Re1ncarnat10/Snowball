@@ -2,6 +2,7 @@
 using SnowBall.Data;
 using SnowBall.Dtos;
 using SnowBall.Interfaces;
+using SnowBall.Models;
 
 namespace SnowBall.Services;
 
@@ -19,11 +20,14 @@ public class UserCartService : IUserCartService
     public async Task<bool> AddSnowballToCartAsync(string userId, int snowballId)
     {
         var userCart = await _context.UserCarts
-            .Include(uc => uc.Snowballs)
-            .FirstOrDefaultAsync(uc => uc.UserId == userId);
+                        .Include(uc => uc.Snowballs)
+                        .FirstOrDefaultAsync(uc => uc.UserId == userId);
 
         if (userCart == null)
-            return false;
+        {
+            userCart = new UserCart { UserId = userId, Snowballs = new List<Snowball>() };
+            _context.UserCarts.Add(userCart);
+        }
 
         var snowball = await _context.Snowballs.FindAsync(snowballId);
         if (snowball == null)
