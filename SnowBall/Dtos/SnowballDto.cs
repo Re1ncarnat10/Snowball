@@ -10,7 +10,6 @@ public class SnowballDto
   public string Name { get; set; }
   [FromForm]
   public string Description { get; set; }
-  [FromForm]
   public string Image { get; set; }
   [FromForm]
   public decimal Price { get; set; }
