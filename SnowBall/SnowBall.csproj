@@ -80,6 +80,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Azure.Storage.Blobs" Version="12.24.1" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.5" />
       <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="9.0.5" />
       <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />

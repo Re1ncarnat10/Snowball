@@ -8,11 +8,20 @@ using SnowBall.Data;
 using SnowBall.Interfaces;
 using SnowBall.Models;
 using SnowBall.Services;
+using Azure.Storage.Blobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://*:{port}");
+
+builder.Services.AddSingleton(x =>
+{
+        var configuration = x.GetRequiredService<IConfiguration>();
+        var connectionString = configuration.GetConnectionString("AzureBlobStorage");
+        var containerName = configuration["AzureBlobContainerName"];
+        return new BlobContainerClient(connectionString, containerName);
+});
 
 builder.Services.AddSwaggerGen(c =>
 {

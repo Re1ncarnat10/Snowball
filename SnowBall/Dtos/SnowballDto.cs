@@ -1,10 +1,17 @@
-﻿namespace SnowBall.Dtos;
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace SnowBall.Dtos;
 
 public class SnowballDto
 {
-    public int SnowballId { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string Image { get; set; }
-    public decimal Price { get; set; }
+  [FromForm]
+  public int SnowballId { get; set; }
+  [FromForm]
+  public string Name { get; set; }
+  [FromForm]
+  public string Description { get; set; }
+  [FromForm]
+  public string Image { get; set; }
+  [FromForm]
+  public decimal Price { get; set; }
 }
