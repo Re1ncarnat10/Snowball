@@ -28,4 +28,10 @@ public class OrderController : ControllerBase
     var order = await _orderService.GetOrderByIdAsync(orderId);
     return order != null ? Ok(order) : NotFound();
   }
+  [HttpGet("user/{userId}")]
+  public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByUserId(string userId)
+  {
+    var orders = await _orderService.GetOrdersByUserIdAsync(userId);
+    return Ok(orders);
+  }
 }

@@ -113,6 +113,7 @@ public class UserCartService : IUserCartService
 
         var orderDto = new OrderDto
         {
+                        UserId = userId, // Ustawienie UserId
                         OrderDate = DateTime.UtcNow,
                         TotalPrice = userCart.Snowballs.Sum(s => s.Price),
                         Snowballs = userCart.Snowballs.Select(s => new SnowballDto

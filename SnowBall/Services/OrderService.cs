@@ -18,4 +18,9 @@ public class OrderService : IOrderService
     _orders.Add(order);
     return Task.CompletedTask;
   }
+  public Task<IEnumerable<OrderDto>> GetOrdersByUserIdAsync(string userId)
+  {
+    var userOrders = _orders.Where(o => o.UserId == userId);
+    return Task.FromResult(userOrders.AsEnumerable());
+  }
 }
