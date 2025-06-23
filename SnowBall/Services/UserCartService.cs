@@ -111,12 +111,25 @@ public class UserCartService : IUserCartService
         if (userCart == null || !userCart.Snowballs.Any())
             return null;
 
-        var orderDto = new OrderDto
+        var order = new Order
         {
-                        UserId = userId, // Ustawienie UserId
+                        UserId = userId,
                         OrderDate = DateTime.UtcNow,
                         TotalPrice = userCart.Snowballs.Sum(s => s.Price),
-                        Snowballs = userCart.Snowballs.Select(s => new SnowballDto
+                        Snowballs = new List<Snowball>(userCart.Snowballs)
+        };
+
+        _context.Orders.Add(order);
+        userCart.Snowballs.Clear();
+        await _context.SaveChangesAsync();
+
+        var orderDto = new OrderDto
+        {
+                        OrderId = order.OrderId,
+                        UserId = order.UserId,
+                        OrderDate = order.OrderDate,
+                        TotalPrice = order.TotalPrice,
+                        Snowballs = order.Snowballs.Select(s => new SnowballDto
                         {
                                         SnowballId = s.SnowballId,
                                         Name = s.Name,
@@ -125,11 +138,6 @@ public class UserCartService : IUserCartService
                                         Image = s.Image
                         }).ToList()
         };
-
-        await _orderService.AddOrderAsync(orderDto);
-
-        userCart.Snowballs.Clear();
-        await _context.SaveChangesAsync();
 
         return orderDto;
     }
